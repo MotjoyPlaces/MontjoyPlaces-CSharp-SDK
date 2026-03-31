@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../src/MontjoyPlaces.csproj" />
+    <ProjectReference Include="../MontjoyPlaces/MontjoyPlaces/MontjoyPlaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

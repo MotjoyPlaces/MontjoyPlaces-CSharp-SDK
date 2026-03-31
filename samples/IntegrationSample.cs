@@ -1,4 +1,5 @@
 using MontjoyPlacesSdk;
+using System.Text.Json;
 
 var apiKey = Environment.GetEnvironmentVariable("MONTJOY_PLACES_API_KEY");
 if (string.IsNullOrWhiteSpace(apiKey))
@@ -15,6 +16,9 @@ string? customPlaceId = null;
 
 try
 {
+    var plans = await client.ListBillingPlansAsync();
+    Console.WriteLine("billing plans: " + string.Join(", ", plans.Plans.Select(plan => plan.Code)));
+
     var createdGroup = await client.CreateGroupAsync(new GroupCreateRequest(groupName));
     groupId = createdGroup.Row.GroupId;
     Console.WriteLine($"created group: {createdGroup.Row}");
@@ -61,6 +65,19 @@ try
         IncludeHidden = true
     });
     Console.WriteLine("group custom places: " + string.Join(", ", listedPlaces.Rows.Select(row => row.Name)));
+
+    var search = await client.SearchPlacesAsync(new SearchPlacesRequest("coffee near Boston MA") { Limit = 3 });
+    var firstPlaceId = search.Rows.ValueKind == JsonValueKind.Array
+        ? search.Rows.EnumerateArray()
+            .Select(row => row.TryGetProperty("fsq_place_id", out var placeId) ? placeId.GetString() : null)
+            .FirstOrDefault(placeId => !string.IsNullOrWhiteSpace(placeId))
+        : null;
+
+    if (!string.IsNullOrWhiteSpace(firstPlaceId))
+    {
+        var place = await client.GetPlaceAsync(firstPlaceId);
+        Console.WriteLine($"direct place lookup: {place.Row?.Name} ({place.Row?.PlaceSource})");
+    }
 }
 finally
 {

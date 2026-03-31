@@ -31,6 +31,9 @@ public sealed class MontjoyPlaces : IDisposable
         _httpClient.DefaultRequestHeaders.Add("X-API-Key", apiKey);
     }
 
+    public Task<BillingPlansResponse> ListBillingPlansAsync(CancellationToken cancellationToken = default) =>
+        SendAsync<BillingPlansResponse>(HttpMethod.Get, "billing/plans", cancellationToken: cancellationToken);
+
     public Task<WhoAmIResponse> WhoAmIAsync(CancellationToken cancellationToken = default) =>
         SendAsync<WhoAmIResponse>(HttpMethod.Get, "v1/whoami", cancellationToken: cancellationToken);
 
@@ -63,6 +66,9 @@ public sealed class MontjoyPlaces : IDisposable
 
     public Task<CustomPlaceSingleResponse> HideCustomPlaceAsync(string customPlaceId, CustomPlaceHideRequest request, CancellationToken cancellationToken = default) =>
         SendAsync<CustomPlaceSingleResponse>(HttpMethod.Post, $"v1/custom-places/{Uri.EscapeDataString(customPlaceId)}/hide", body: request, cancellationToken: cancellationToken);
+
+    public Task<PlaceSingleResponse> GetPlaceAsync(string placeId, CancellationToken cancellationToken = default) =>
+        SendAsync<PlaceSingleResponse>(HttpMethod.Get, $"v1/places/{Uri.EscapeDataString(placeId)}", cancellationToken: cancellationToken);
 
     public Task<OverrideResponse> OverridePlaceAsync(string fsqPlaceId, OverrideRequest request, CancellationToken cancellationToken = default) =>
         SendAsync<OverrideResponse>(HttpMethod.Put, $"v1/places/{Uri.EscapeDataString(fsqPlaceId)}/override", body: request, cancellationToken: cancellationToken);

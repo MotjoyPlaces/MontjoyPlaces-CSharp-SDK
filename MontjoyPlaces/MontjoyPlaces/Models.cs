@@ -5,6 +5,23 @@ namespace MontjoyPlacesSdk;
 
 public sealed record ErrorResponse([property: JsonPropertyName("error")] string Error);
 
+public sealed record PlanCatalogEntry(
+    [property: JsonPropertyName("code")] string Code,
+    [property: JsonPropertyName("label")] string Label,
+    [property: JsonPropertyName("monthlyRequests")] int? MonthlyRequests,
+    [property: JsonPropertyName("maxTenants")] int? MaxTenants,
+    [property: JsonPropertyName("maxApps")] int? MaxApps,
+    [property: JsonPropertyName("maxApiKeys")] int? MaxApiKeys,
+    [property: JsonPropertyName("overageAllowed")] bool OverageAllowed,
+    [property: JsonPropertyName("overageBlockRequests")] int OverageBlockRequests,
+    [property: JsonPropertyName("overageBlockPriceCents")] int OverageBlockPriceCents,
+    [property: JsonPropertyName("maxUsageMultiplier")] int? MaxUsageMultiplier,
+    [property: JsonPropertyName("hardCapByDefault")] bool HardCapByDefault);
+
+public sealed record BillingPlansResponse(
+    [property: JsonPropertyName("ok")] bool Ok,
+    [property: JsonPropertyName("plans")] IReadOnlyList<PlanCatalogEntry> Plans);
+
 public sealed record WhoAmIResponse(
     [property: JsonPropertyName("ok")] bool Ok,
     [property: JsonPropertyName("apiKeyId")] string ApiKeyId,
@@ -165,6 +182,30 @@ public sealed record CustomPlaceUpdateRequest
 
 public sealed record CustomPlaceHideRequest([property: JsonPropertyName("hidden")] bool Hidden = true);
 
+public sealed record Place(
+    [property: JsonPropertyName("fsq_place_id")] string FsqPlaceId,
+    [property: JsonPropertyName("place_source")] string PlaceSource,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("latitude")] double Latitude,
+    [property: JsonPropertyName("longitude")] double Longitude,
+    [property: JsonPropertyName("address")] string? Address,
+    [property: JsonPropertyName("locality")] string? Locality,
+    [property: JsonPropertyName("region")] string? Region,
+    [property: JsonPropertyName("postcode")] string? Postcode,
+    [property: JsonPropertyName("country")] string? Country,
+    [property: JsonPropertyName("website")] string? Website,
+    [property: JsonPropertyName("tel")] string? Tel,
+    [property: JsonPropertyName("email")] string? Email,
+    [property: JsonPropertyName("formatted_address")] string? FormattedAddress,
+    [property: JsonPropertyName("geocode_provider")] string? GeocodeProvider,
+    [property: JsonPropertyName("geocode_confidence")] double? GeocodeConfidence,
+    [property: JsonPropertyName("created_at")] DateTimeOffset? CreatedAt,
+    [property: JsonPropertyName("updated_at")] DateTimeOffset? UpdatedAt);
+
+public sealed record PlaceSingleResponse(
+    [property: JsonPropertyName("ok")] bool Ok,
+    [property: JsonPropertyName("row")] Place? Row);
+
 public sealed record SearchResolvedCenter(
     [property: JsonPropertyName("lat")] double Lat,
     [property: JsonPropertyName("lon")] double Lon,
@@ -180,6 +221,14 @@ public sealed record SearchResolved(
     [property: JsonPropertyName("groupId")] string? GroupId,
     [property: JsonPropertyName("customOnly")] bool? CustomOnly,
     [property: JsonPropertyName("localityText")] string? LocalityText,
+    [property: JsonPropertyName("addressQuery")] string? AddressQuery,
+    [property: JsonPropertyName("addressPlaceId")] string? AddressPlaceId,
+    [property: JsonPropertyName("formattedAddress")] string? FormattedAddress,
+    [property: JsonPropertyName("geocodeProvider")] string? GeocodeProvider,
+    [property: JsonPropertyName("geocodeCacheHit")] bool? GeocodeCacheHit,
+    [property: JsonPropertyName("addressRadiusMeters")] double? AddressRadiusMeters,
+    [property: JsonPropertyName("addressCandidateCount")] int? AddressCandidateCount,
+    [property: JsonPropertyName("addressFilteredCount")] int? AddressFilteredCount,
     [property: JsonPropertyName("center")] SearchResolvedCenter? Center);
 
 public sealed record SearchResponse(
@@ -377,6 +426,9 @@ public sealed record SearchPlacesRequest([property: JsonPropertyName("q")] strin
 
     [JsonPropertyName("onlyCustom")]
     public bool? OnlyCustom { get; init; }
+
+    [JsonPropertyName("isAddress")]
+    public bool? IsAddress { get; init; }
 
     [JsonPropertyName("groupId")]
     public string? GroupId { get; init; }
